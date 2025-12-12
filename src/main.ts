@@ -2,7 +2,7 @@
 import AggregateError from "aggregate-error";
 import cloneDeep from "lodash/cloneDeep";
 import throttle from "lodash/throttle";
-import { FileText, RefreshCcw, RotateCcw, createElement } from "lucide";
+import {FileText, RefreshCcw, RotateCcw, createElement} from "lucide";
 import {
   Events,
   FileSystemAdapter,
@@ -31,14 +31,14 @@ import {
   COMMAND_CALLBACK_PRO,
   COMMAND_CALLBACK_YANDEXDISK,
 } from "../pro/src/baseTypesPro";
-import { DEFAULT_AZUREBLOBSTORAGE_CONFIG } from "../pro/src/fsAzureBlobStorage";
+import {DEFAULT_AZUREBLOBSTORAGE_CONFIG} from "../pro/src/fsAzureBlobStorage";
 import {
   DEFAULT_BOX_CONFIG,
   FakeFsBox,
   sendAuthReq as sendAuthReqBox,
   setConfigBySuccessfullAuthInplace as setConfigBySuccessfullAuthInplaceBox,
 } from "../pro/src/fsBox";
-import { DEFAULT_GOOGLEDRIVE_CONFIG } from "../pro/src/fsGoogleDrive";
+import {DEFAULT_GOOGLEDRIVE_CONFIG} from "../pro/src/fsGoogleDrive";
 import {
   DEFAULT_KOOFR_CONFIG,
   sendAuthReq as sendAuthReqKoofr,
@@ -62,7 +62,7 @@ import {
   sendAuthReq as sendAuthReqYandexDisk,
   setConfigBySuccessfullAuthInplace as setConfigBySuccessfullAuthInplaceYandexDisk,
 } from "../pro/src/fsYandexDisk";
-import { syncer } from "../pro/src/sync";
+import {syncer} from "../pro/src/sync";
 import type {
   RemotelySavePluginSettings,
   SyncTriggerSourceType,
@@ -73,29 +73,29 @@ import {
   COMMAND_CALLBACK_ONEDRIVE,
   COMMAND_URI,
 } from "./baseTypes";
-import { API_VER_ENSURE_REQURL_OK } from "./baseTypesObs";
-import { messyConfigToNormal, normalConfigToMessy } from "./configPersist";
-import { exportVaultSyncPlansToFiles } from "./debugMode";
+import {API_VER_ENSURE_REQURL_OK} from "./baseTypesObs";
+import {messyConfigToNormal, normalConfigToMessy} from "./configPersist";
+import {exportVaultSyncPlansToFiles} from "./debugMode";
 import {
   DEFAULT_DROPBOX_CONFIG,
   sendAuthReq as sendAuthReqDropbox,
   setConfigBySuccessfullAuthInplace as setConfigBySuccessfullAuthInplaceDropbox,
 } from "./fsDropbox";
-import { FakeFsEncrypt } from "./fsEncrypt";
-import { getClient } from "./fsGetter";
-import { FakeFsLocal } from "./fsLocal";
+import {FakeFsEncrypt} from "./fsEncrypt";
+import {getClient} from "./fsGetter";
+import {FakeFsLocal} from "./fsLocal";
 import {
   type AccessCodeResponseSuccessfulType as AccessCodeResponseSuccessfulTypeOnedrive,
   DEFAULT_ONEDRIVE_CONFIG,
   sendAuthReq as sendAuthReqOnedrive,
   setConfigBySuccessfullAuthInplace as setConfigBySuccessfullAuthInplaceOnedrive,
 } from "./fsOnedrive";
-import { DEFAULT_S3_CONFIG } from "./fsS3";
-import { DEFAULT_WEBDAV_CONFIG } from "./fsWebdav";
-import { DEFAULT_WEBDIS_CONFIG } from "./fsWebdis";
-import { I18n } from "./i18n";
-import type { LangTypeAndAuto, TransItemType } from "./i18n";
-import { importQrCodeUri } from "./importExport";
+import {DEFAULT_S3_CONFIG} from "./fsS3";
+import {DEFAULT_WEBDAV_CONFIG} from "./fsWebdav";
+import {DEFAULT_WEBDIS_CONFIG} from "./fsWebdis";
+import {I18n} from "./i18n";
+import type {LangTypeAndAuto, TransItemType} from "./i18n";
+import {importQrCodeUri} from "./importExport";
 import {
   type InternalDBs,
   clearAllLoggerOutputRecords,
@@ -107,10 +107,10 @@ import {
   upsertLastSuccessSyncTimeByVault,
   upsertPluginVersionByVault,
 } from "./localdb";
-import { changeMobileStatusBar } from "./misc";
-import { DEFAULT_PROFILER_CONFIG, Profiler } from "./profiler";
-import { RemotelySaveSettingTab } from "./settings";
-import { SyncAlgoV3Modal } from "./syncAlgoV3Notice";
+import {changeMobileStatusBar} from "./misc";
+import {DEFAULT_PROFILER_CONFIG, Profiler} from "./profiler";
+import {RemotelySaveSettingTab} from "./settings";
+import {SyncAlgoV3Modal} from "./syncAlgoV3Notice";
 
 const DEFAULT_SETTINGS: RemotelySavePluginSettings = {
   s3: DEFAULT_S3_CONFIG,
@@ -132,6 +132,7 @@ const DEFAULT_SETTINGS: RemotelySavePluginSettings = {
   autoRunEveryMilliseconds: -1,
   initRunAfterMilliseconds: -1,
   syncOnSaveAfterMilliseconds: -1,
+  // syncOnSaveDelay: 20,
   agreeToUploadExtraMetadata: true, // as of 20240106, it's safe to assume every new user agrees with this
   concurrency: 5,
   syncConfigDir: false,
@@ -516,7 +517,7 @@ export default class RemotelySavePlugin extends Plugin {
   async onload() {
     console.info(`loading plugin ${this.manifest.id}`);
 
-    const { iconSvgSyncWait, iconSvgSyncRunning, iconSvgLogs } = getIconSvg();
+    const {iconSvgSyncWait, iconSvgSyncRunning, iconSvgLogs} = getIconSvg();
 
     addIcon(iconNameSyncWait, iconSvgSyncWait);
     addIcon(iconNameSyncRunning, iconSvgSyncRunning);
@@ -1309,7 +1310,7 @@ export default class RemotelySavePlugin extends Plugin {
     }
 
     // compare versions and read new versions
-    const { oldVersion } = await upsertPluginVersionByVault(
+    const {oldVersion} = await upsertPluginVersionByVault(
       this.db,
       this.vaultRandomID,
       this.manifest.version
@@ -1745,7 +1746,7 @@ export default class RemotelySavePlugin extends Plugin {
     vaultRandomIDFromOldConfigFile: string,
     profileID: string
   ) {
-    const { db, vaultRandomID } = await prepareDBs(
+    const {db, vaultRandomID} = await prepareDBs(
       vaultBasePath,
       vaultRandomIDFromOldConfigFile,
       profileID
@@ -1787,6 +1788,7 @@ export default class RemotelySavePlugin extends Plugin {
   async _checkCurrFileModified(caller: "SYNC" | "FILE_CHANGES") {
     console.debug(`inside checkCurrFileModified`);
     const currentFile = this.app.workspace.getActiveFile();
+    console.log("file change")
 
     if (currentFile) {
       console.debug(`we have currentFile=${currentFile.path}`);
@@ -1820,6 +1822,7 @@ export default class RemotelySavePlugin extends Plugin {
           return;
         } else {
           if (this.hasPendingSyncOnSave || caller === "FILE_CHANGES") {
+            // TODO: change here
             this.hasPendingSyncOnSave = false;
             await this.syncRun("auto_sync_on_save");
           }
@@ -1839,7 +1842,7 @@ export default class RemotelySavePlugin extends Plugin {
     async () => {
       await this._checkCurrFileModified("FILE_CHANGES");
     },
-    1000 * 3,
+    1000 * 60, // minute delay for change
     {
       leading: false,
       trailing: true,
@@ -1993,17 +1996,17 @@ export default class RemotelySavePlugin extends Plugin {
       const seconds = Math.floor(deltaTime / 1000);
       let timeText = "";
       if (years > 0) {
-        timeText = t("statusbar_time_years", { time: years });
+        timeText = t("statusbar_time_years", {time: years});
       } else if (months > 0) {
-        timeText = t("statusbar_time_months", { time: months });
+        timeText = t("statusbar_time_months", {time: months});
       } else if (weeks > 0) {
-        timeText = t("statusbar_time_weeks", { time: weeks });
+        timeText = t("statusbar_time_weeks", {time: weeks});
       } else if (days > 0) {
-        timeText = t("statusbar_time_days", { time: days });
+        timeText = t("statusbar_time_days", {time: days});
       } else if (hours > 0) {
-        timeText = t("statusbar_time_hours", { time: hours });
+        timeText = t("statusbar_time_hours", {time: hours});
       } else if (minutes > 0) {
-        timeText = t("statusbar_time_minutes", { time: minutes });
+        timeText = t("statusbar_time_minutes", {time: minutes});
       } else if (seconds > 30) {
         timeText = t("statusbar_time_lessminute");
       } else {
@@ -2021,7 +2024,7 @@ export default class RemotelySavePlugin extends Plugin {
 
       lastSyncMsg = prefix + timeText;
       lastSyncLabelMsg =
-        prefix + t("statusbar_lastsync_label", { date: dateText });
+        prefix + t("statusbar_lastsync_label", {date: dateText});
     } else {
       // TODO: no idea what happened.
     }
