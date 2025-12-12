@@ -62,7 +62,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - run: npm install
       - run: npm test
-      - run: npm run build
+      - run: npm run build2
       - name: Create Release And Upload
         uses: softprops/action-gh-release@v2
         with:
