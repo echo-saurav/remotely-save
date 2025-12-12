@@ -14,7 +14,7 @@ import {
   TFolder,
   addIcon,
   requireApiVersion,
-  setIcon,
+  setIcon, debounce,
 } from "obsidian";
 import {
   DEFAULT_PRO_CONFIG,
@@ -1838,16 +1838,21 @@ export default class RemotelySavePlugin extends Plugin {
     this._checkCurrFileModified("SYNC");
   };
 
-  _syncOnSaveEvent2 = throttle(
-    async () => {
-      await this._checkCurrFileModified("FILE_CHANGES");
-    },
-    1000 * 60, // minute delay for change
-    {
-      leading: false,
-      trailing: true,
-    }
-  );
+  // _syncOnSaveEvent2 = throttle(
+  //   async () => {
+  //     console.log("changes")
+  //     await this._checkCurrFileModified("FILE_CHANGES");
+  //   },
+  //   1000 * 10, // minute delay for change
+  //   {
+  //     leading: false,
+  //     trailing: true,
+  //   }
+  // );
+  _syncOnSaveEvent2 = debounce(async () => {
+    console.log("changes")
+    await this._checkCurrFileModified("FILE_CHANGES");
+  }, 1000 * 60, true);
 
   toggleSyncOnSaveIfSet() {
     if (
